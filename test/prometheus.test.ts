@@ -65,6 +65,10 @@ describe('MCP Server Requirements', () => {
       canisterId,
     );
 
+    // Disable vetKD encryption for PocketIc tests (no vetKD available locally)
+    serverActor.setIdentity(testOwner);
+    await serverActor.set_encryption_enabled(false);
+
     // Create API key for owner (needed since auth is enabled)
     serverActor.setIdentity(testOwner);
     ownerApiKey = await serverActor.create_my_api_key('owner-key', ['openid']);

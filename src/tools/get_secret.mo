@@ -4,8 +4,10 @@ import Result "mo:base/Result";
 import Json "mo:json";
 import Map "mo:map/Map";
 import Array "mo:base/Array";
+import Text "mo:base/Text";
 
 import ToolContext "ToolContext";
+import Encryption "../Encryption";
 
 module {
 
@@ -70,6 +72,25 @@ module {
         };
       };
 
+      // Decrypt the value
+      let value = if (context.encryptionEnabled()) {
+        let derivedKey = await Encryption.deriveKeyForPrincipal(caller, context.vetKdKeyId);
+        switch (Encryption.decrypt(secret.ciphertext, key, derivedKey)) {
+          case (?v) { v };
+          case (null) {
+            return ToolContext.makeError("DECRYPTION_FAILED: Could not decrypt secret '" # key # "'", cb);
+          };
+        };
+      } else {
+        // Fallback: read plaintext blob (for local testing without vetKD)
+        switch (Text.decodeUtf8(secret.ciphertext)) {
+          case (?v) { v };
+          case (null) {
+            return ToolContext.makeError("DECRYPTION_FAILED: Could not decode secret '" # key # "'", cb);
+          };
+        };
+      };
+
       let labelsJson = Json.arr(
         Array.map<Text, Json.Json>(secret.labels, func(l : Text) : Json.Json { Json.str(l) })
       );
@@ -77,8 +98,8 @@ module {
       ToolContext.makeSuccess(
         Json.obj([
           ("key", Json.str(secret.key)),
-          ("value", Json.str(secret.value)),
-          ("encrypted", Json.bool(secret.encrypted)),
+          ("value", Json.str(value)),
+          ("encrypted", Json.bool(secret.clientEncrypted)),
           ("labels", labelsJson),
           ("created_at", #number(#int(secret.created_at))),
           ("updated_at", #number(#int(secret.updated_at))),

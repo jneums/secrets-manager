@@ -7,13 +7,17 @@ import Map "mo:map/Map";
 import Time "mo:base/Time";
 import Int "mo:base/Int";
 
+import Encryption "../Encryption";
+
 module ToolContext {
 
   // --- Secret type ---
+  // Values are stored as encrypted Blobs (ciphertext).
+  // The `encrypted` field now indicates client-side encryption ON TOP of vetKey encryption.
   public type Secret = {
     key : Text;
-    value : Text;
-    encrypted : Bool;
+    ciphertext : Blob;       // vetKey-encrypted value (always encrypted at rest)
+    clientEncrypted : Bool;   // true if the client ALSO encrypted before sending
     labels : [Text];
     created_at : Nat;
     updated_at : Nat;
@@ -28,6 +32,8 @@ module ToolContext {
     owner : Principal;
     appContext : McpTypes.AppContext;
     secrets : SecretsStore;
+    vetKdKeyId : Encryption.VetKdKeyId;
+    encryptionEnabled : () -> Bool;
   };
 
   // --- Constants ---

@@ -122,12 +122,24 @@ shared ({ caller = deployer }) persistent actor class McpServer(
     },
   ];
 
+  // --- VetKD Key Configuration ---
+  // Use test_key_1 for development/testing, key_1 for production
+  let vetKdKeyId : {
+    curve : { #bls12_381_g2 };
+    name : Text;
+  } = { curve = #bls12_381_g2; name = "test_key_1" };
+
+  // Encryption at rest via vetKD — enabled by default on mainnet
+  var encryptionEnabled : Bool = true;
+
   // --- TOOL CONTEXT ---
   transient let toolContext : ToolContext.ToolContext = {
     canisterPrincipal = Principal.fromActor(self);
     owner = owner;
     appContext = appContext;
     secrets = secrets;
+    vetKdKeyId = vetKdKeyId;
+    encryptionEnabled = func() : Bool { encryptionEnabled };
   };
 
   // --- TOOLS ---
@@ -170,6 +182,15 @@ shared ({ caller = deployer }) persistent actor class McpServer(
   // --- PUBLIC ENTRY POINTS ---
 
   public query func get_owner() : async Principal { return owner };
+
+  /// Enable or disable vetKD encryption at rest. Only the owner can call this.
+  public shared ({ caller }) func set_encryption_enabled(enabled : Bool) : async () {
+    if (caller != owner) { Debug.trap("Only the owner can change encryption settings") };
+    encryptionEnabled := enabled;
+  };
+
+  /// Check if vetKD encryption at rest is enabled.
+  public query func get_encryption_enabled() : async Bool { encryptionEnabled };
 
   public shared ({ caller }) func set_owner(new_owner : Principal) : async Result.Result<(), Payments.TreasuryError> {
     if (caller != owner) { return #err(#NotOwner) };

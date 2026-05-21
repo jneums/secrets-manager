@@ -99,8 +99,8 @@ module {
       let now = ToolContext.now();
       let updated : ToolContext.Secret = {
         key = existing.key;
-        value = existing.value;
-        encrypted = existing.encrypted;
+        ciphertext = existing.ciphertext;
+        clientEncrypted = existing.clientEncrypted;
         labels = labels;
         created_at = existing.created_at;
         updated_at = now;

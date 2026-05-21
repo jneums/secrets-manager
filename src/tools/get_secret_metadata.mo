@@ -76,7 +76,7 @@ module {
       ToolContext.makeSuccess(
         Json.obj([
           ("key", Json.str(secret.key)),
-          ("encrypted", Json.bool(secret.encrypted)),
+          ("encrypted", Json.bool(secret.clientEncrypted)),
           ("labels", labelsJson),
           ("created_at", #number(#int(secret.created_at))),
           ("updated_at", #number(#int(secret.updated_at))),

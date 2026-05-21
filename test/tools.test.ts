@@ -103,6 +103,10 @@ describe('Secrets Manager Tools', () => {
       canisterId,
     );
 
+    // Disable vetKD encryption for PocketIc tests (no vetKD available locally)
+    serverActor.setIdentity(testOwner);
+    await serverActor.set_encryption_enabled(false);
+
     // Create API keys for both test users
     serverActor.setIdentity(testUser1);
     user1ApiKey = await serverActor.create_my_api_key('user1-key', ['openid']);

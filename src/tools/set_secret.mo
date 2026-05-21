@@ -5,8 +5,10 @@ import Json "mo:json";
 import Map "mo:map/Map";
 import Buffer "mo:base/Buffer";
 import Array "mo:base/Array";
+import Text "mo:base/Text";
 
 import ToolContext "ToolContext";
+import Encryption "../Encryption";
 
 module {
 
@@ -96,8 +98,8 @@ module {
         return ToolContext.makeError("INVALID_INPUT: Value exceeds maximum size of 10KB", cb);
       };
 
-      // Parse encrypted flag (default false)
-      let encrypted = switch (Result.toOption(Json.getAsBool(args, "encrypted"))) {
+      // Parse encrypted flag (default false) — indicates client-side encryption
+      let clientEncrypted = switch (Result.toOption(Json.getAsBool(args, "encrypted"))) {
         case (?e) { e };
         case (null) { false };
       };
@@ -138,6 +140,15 @@ module {
         };
       };
 
+      // Encrypt the value (vetKD encryption at rest)
+      let ciphertext = if (context.encryptionEnabled()) {
+        let derivedKey = await Encryption.deriveKeyForPrincipal(caller, context.vetKdKeyId);
+        Encryption.encrypt(value, key, derivedKey);
+      } else {
+        // Fallback: store as plaintext blob (for local testing without vetKD)
+        Text.encodeUtf8(value);
+      };
+
       let now = ToolContext.now();
       let created = switch (existing) {
         case (?e) { e.created_at };
@@ -146,8 +157,8 @@ module {
 
       let secret : ToolContext.Secret = {
         key = key;
-        value = value;
-        encrypted = encrypted;
+        ciphertext = ciphertext;
+        clientEncrypted = clientEncrypted;
         labels = labels;
         created_at = created;
         updated_at = now;
@@ -162,7 +173,7 @@ module {
       ToolContext.makeSuccess(
         Json.obj([
           ("key", Json.str(key)),
-          ("encrypted", Json.bool(encrypted)),
+          ("encrypted", Json.bool(clientEncrypted)),
           ("labels", labelsJson),
           ("created_at", #number(#int(created))),
           ("updated_at", #number(#int(now))),
