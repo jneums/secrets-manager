@@ -1,0 +1,32 @@
+name: secrets-manager
+namespace: io.github.jneums.secrets-manager
+title: Secrets Manager
+version: 0.1.0
+description: A secure, per-principal key-value store for secrets on the Internet Computer. Store API keys, tokens, and credentials with per-identity isolation.
+category: Utilities
+mcp_path: /mcp
+repo_url: https://github.com/jneums/secrets-manager
+payment: null
+tags: [secrets, key-value, encryption, security, agent-tools, vault]
+submission:
+  name: Secrets Manager
+  description: A secure, per-principal key-value store for secrets on the Internet Computer. Store API keys, tokens, and credentials with per-identity isolation.
+  publisher: Jesse
+  category: Utilities
+  deployment_type: global
+  repo_url: https://github.com/jneums/secrets-manager
+  mcp_path: /mcp
+  why_this_app: Every agent needs a place to store API keys and tokens. Secrets Manager gives your agent a private, persistent vault on the Internet Computer — no databases, no external services, just secure on-chain storage scoped to your identity.
+  key_features:
+    - Per-principal isolated secret storage — each identity gets its own private vault
+    - Client-side encryption support — store pre-encrypted values for maximum security
+    - Labels for organizing secrets — tag and filter your keys
+    - Upsert semantics — set_secret creates or updates seamlessly
+    - Metadata inspection without exposing values — list and check secrets safely
+    - Idempotent delete — safe to call on non-existent keys
+  tags: [secrets, key-value, encryption, security, agent-tools, vault]
+  visuals:
+    icon_url: https://github.com/jneums/secrets-manager/releases/download/v0.1.0-assets/icon-secrets-manager.webp
+    banner_url: https://github.com/jneums/secrets-manager/releases/download/v0.1.0-assets/banner-secrets-manager.webp
+    gallery_images:
+      - https://github.com/jneums/secrets-manager/releases/download/v0.1.0-assets/banner-secrets-manager.webp

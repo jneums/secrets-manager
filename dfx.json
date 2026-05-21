@@ -1,0 +1,13 @@
+{
+  "canisters": {
+    "secrets-manager": {
+      "main": "src/main.mo",
+      "type": "motoko"
+    }
+  },
+  "defaults": {
+    "build": {
+      "packtool": "mops sources"
+    }
+  }
+}
