@@ -1,30 +1,31 @@
 name: secrets-manager
 namespace: io.github.jneums.secrets-manager
 title: Secrets Manager
-version: 0.1.0
-description: A secure, per-principal key-value store for secrets on the Internet Computer. Store API keys, tokens, and credentials with per-identity isolation.
+version: 0.2.0
+description: A vetKey-encrypted, per-principal secret vault on the Internet Computer. Every value is encrypted at rest using ICP's threshold key derivation — no single node can ever read your secrets.
 category: Utilities
 mcp_path: /mcp
 repo_url: https://github.com/jneums/secrets-manager
 payment: null
-tags: [secrets, key-value, encryption, security, agent-tools, vault]
+tags: [secrets, key-value, vetkeys, encryption, security, agent-tools, vault]
 submission:
   name: Secrets Manager
-  description: A secure, per-principal key-value store for secrets on the Internet Computer. Store API keys, tokens, and credentials with per-identity isolation.
+  description: A vetKey-encrypted, per-principal secret vault on the Internet Computer. Every value is encrypted at rest using ICP's threshold key derivation — no single node can ever read your secrets.
   publisher: Jesse
   category: Utilities
   deployment_type: global
   repo_url: https://github.com/jneums/secrets-manager
   mcp_path: /mcp
-  why_this_app: Every agent needs a place to store API keys and tokens. Secrets Manager gives your agent a private, persistent vault on the Internet Computer — no databases, no external services, just secure on-chain storage scoped to your identity.
+  why_this_app: Every agent needs a place to store API keys and tokens. Secrets Manager is the first MCP server to use ICP vetKeys for encryption at rest — your secrets are encrypted using threshold-derived keys that no single subnet node ever sees. Per-principal isolation, zero external dependencies, fully on-chain.
   key_features:
-    - Per-principal isolated secret storage — each identity gets its own private vault
-    - Client-side encryption support — store pre-encrypted values for maximum security
+    - vetKey encryption at rest — every secret is encrypted using ICP's threshold key derivation protocol, no node ever sees your plaintext
+    - Per-principal key isolation — each identity gets a unique encryption key derived from their principal
+    - Transparent encryption — just call set_secret and get_secret, the canister handles all cryptography
     - Labels for organizing secrets — tag and filter your keys
     - Upsert semantics — set_secret creates or updates seamlessly
     - Metadata inspection without exposing values — list and check secrets safely
     - Idempotent delete — safe to call on non-existent keys
-  tags: [secrets, key-value, encryption, security, agent-tools, vault]
+  tags: [secrets, key-value, vetkeys, encryption, security, agent-tools, vault]
   visuals:
     icon_url: https://github.com/jneums/secrets-manager/releases/download/v0.1.0-assets/icon-secrets-manager.webp
     banner_url: https://github.com/jneums/secrets-manager/releases/download/v0.1.0-assets/banner-secrets-manager.webp
