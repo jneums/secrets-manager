@@ -123,11 +123,10 @@ shared ({ caller = deployer }) persistent actor class McpServer(
   ];
 
   // --- VetKD Key Configuration ---
-  // Use test_key_1 for development/testing, key_1 for production
   let vetKdKeyId : {
     curve : { #bls12_381_g2 };
     name : Text;
-  } = { curve = #bls12_381_g2; name = "test_key_1" };
+  } = { curve = #bls12_381_g2; name = "key_1" };
 
   // Encryption at rest via vetKD — enabled by default on mainnet
   var encryptionEnabled : Bool = true;

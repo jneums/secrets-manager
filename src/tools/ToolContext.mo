@@ -12,12 +12,10 @@ import Encryption "../Encryption";
 module ToolContext {
 
   // --- Secret type ---
-  // Values are stored as encrypted Blobs (ciphertext).
-  // The `encrypted` field now indicates client-side encryption ON TOP of vetKey encryption.
+  // Values are always encrypted at rest via vetKD.
   public type Secret = {
     key : Text;
-    ciphertext : Blob;       // vetKey-encrypted value (always encrypted at rest)
-    clientEncrypted : Bool;   // true if the client ALSO encrypted before sending
+    ciphertext : Blob;  // vetKey-encrypted value
     labels : [Text];
     created_at : Nat;
     updated_at : Nat;

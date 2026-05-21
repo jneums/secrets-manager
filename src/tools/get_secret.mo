@@ -14,7 +14,7 @@ module {
   public func config() : McpTypes.Tool = {
     name = "get_secret";
     title = ?"Get Secret";
-    description = ?"Retrieve a secret by key. Returns the full value. If the secret was stored with encrypted=true, the returned value is the ciphertext — decrypt it client-side.";
+    description = ?"Retrieve a secret by key. Returns the full value.";
     payment = null;
     inputSchema = Json.obj([
       ("type", Json.str("object")),
@@ -31,7 +31,6 @@ module {
       ("properties", Json.obj([
         ("key", Json.obj([("type", Json.str("string"))])),
         ("value", Json.obj([("type", Json.str("string"))])),
-        ("encrypted", Json.obj([("type", Json.str("boolean"))])),
         ("labels", Json.obj([
           ("type", Json.str("array")),
           ("items", Json.obj([("type", Json.str("string"))])),
@@ -82,7 +81,6 @@ module {
           };
         };
       } else {
-        // Fallback: read plaintext blob (for local testing without vetKD)
         switch (Text.decodeUtf8(secret.ciphertext)) {
           case (?v) { v };
           case (null) {
@@ -99,7 +97,6 @@ module {
         Json.obj([
           ("key", Json.str(secret.key)),
           ("value", Json.str(value)),
-          ("encrypted", Json.bool(secret.clientEncrypted)),
           ("labels", labelsJson),
           ("created_at", #number(#int(secret.created_at))),
           ("updated_at", #number(#int(secret.updated_at))),

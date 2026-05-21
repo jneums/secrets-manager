@@ -42,7 +42,7 @@ module {
             ("type", Json.str("object")),
             ("properties", Json.obj([
               ("key", Json.obj([("type", Json.str("string"))])),
-              ("encrypted", Json.obj([("type", Json.str("boolean"))])),
+
               ("labels", Json.obj([
                 ("type", Json.str("array")),
                 ("items", Json.obj([("type", Json.str("string"))])),
@@ -128,7 +128,7 @@ module {
           resultBuf.add(
             Json.obj([
               ("key", Json.str(secret.key)),
-              ("encrypted", Json.bool(secret.clientEncrypted)),
+
               ("labels", labelsJson),
               ("created_at", #number(#int(secret.created_at))),
               ("updated_at", #number(#int(secret.updated_at))),

@@ -15,7 +15,7 @@ module {
   public func config() : McpTypes.Tool = {
     name = "set_secret";
     title = ?"Set Secret";
-    description = ?"Store or update a named secret. Values are stored per-principal. Use encrypted=true if you've encrypted the value client-side. This is an upsert — if the key exists, the value is updated.";
+    description = ?"Store or update a named secret. Values are stored per-principal. This is an upsert — if the key exists, the value is updated.";
     payment = null;
     inputSchema = Json.obj([
       ("type", Json.str("object")),
@@ -28,11 +28,7 @@ module {
         ])),
         ("value", Json.obj([
           ("type", Json.str("string")),
-          ("description", Json.str("Secret value (max 10KB). If encrypted=true, this should be the ciphertext.")),
-        ])),
-        ("encrypted", Json.obj([
-          ("type", Json.str("boolean")),
-          ("description", Json.str("Set to true if the value is client-side encrypted (default: false)")),
+          ("description", Json.str("Secret value (max 10KB)")),
         ])),
         ("labels", Json.obj([
           ("type", Json.str("array")),
@@ -47,7 +43,6 @@ module {
       ("type", Json.str("object")),
       ("properties", Json.obj([
         ("key", Json.obj([("type", Json.str("string"))])),
-        ("encrypted", Json.obj([("type", Json.str("boolean"))])),
         ("labels", Json.obj([
           ("type", Json.str("array")),
           ("items", Json.obj([("type", Json.str("string"))])),
@@ -96,12 +91,6 @@ module {
       // Validate value size
       if (value.size() > ToolContext.MAX_VALUE_SIZE) {
         return ToolContext.makeError("INVALID_INPUT: Value exceeds maximum size of 10KB", cb);
-      };
-
-      // Parse encrypted flag (default false) — indicates client-side encryption
-      let clientEncrypted = switch (Result.toOption(Json.getAsBool(args, "encrypted"))) {
-        case (?e) { e };
-        case (null) { false };
       };
 
       // Parse labels (default empty)
@@ -158,7 +147,6 @@ module {
       let secret : ToolContext.Secret = {
         key = key;
         ciphertext = ciphertext;
-        clientEncrypted = clientEncrypted;
         labels = labels;
         created_at = created;
         updated_at = now;
@@ -173,7 +161,6 @@ module {
       ToolContext.makeSuccess(
         Json.obj([
           ("key", Json.str(key)),
-          ("encrypted", Json.bool(clientEncrypted)),
           ("labels", labelsJson),
           ("created_at", #number(#int(created))),
           ("updated_at", #number(#int(now))),

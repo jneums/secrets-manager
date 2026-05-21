@@ -181,7 +181,6 @@ describe('Secrets Manager Tools', () => {
       const result = parseResult(response);
       expect(result.key).toBe('API_KEY');
       expect(result.status).toBe('created');
-      expect(result.encrypted).toBe(false);
       expect(result.labels).toEqual(['production', 'ai']);
       expect(result.created_at).toBeGreaterThan(0);
       expect(result.updated_at).toBeGreaterThan(0);
@@ -201,22 +200,21 @@ describe('Secrets Manager Tools', () => {
       expect(result.status).toBe('updated');
     });
 
-    it('should create an encrypted secret', async () => {
+    it('should create a second secret with labels', async () => {
       serverActor.setIdentity(testUser1);
       const response = await callTool(
         serverActor,
         'set_secret',
         {
-          key: 'ENCRYPTED_SECRET',
-          value: 'base64-encrypted-ciphertext-here',
-          encrypted: true,
-          labels: ['encrypted'],
+          key: 'ANOTHER_SECRET',
+          value: 'another-secret-value',
+          labels: ['database'],
         },
         user1ApiKey,
       );
       expect(response.result.isError).toBe(false);
       const result = parseResult(response);
-      expect(result.encrypted).toBe(true);
+      expect(result.status).toBe('created');
     });
 
     it('should reject invalid key format', async () => {
@@ -297,18 +295,17 @@ describe('Secrets Manager Tools', () => {
       expect(response.result.content[0].text).toContain('NOT_FOUND');
     });
 
-    it('should retrieve encrypted secret with encrypted flag', async () => {
+    it('should retrieve second secret', async () => {
       serverActor.setIdentity(testUser1);
       const response = await callTool(
         serverActor,
         'get_secret',
-        { key: 'ENCRYPTED_SECRET' },
+        { key: 'ANOTHER_SECRET' },
         user1ApiKey,
       );
       expect(response.result.isError).toBe(false);
       const result = parseResult(response);
-      expect(result.encrypted).toBe(true);
-      expect(result.value).toBe('base64-encrypted-ciphertext-here');
+      expect(result.value).toBe('another-secret-value');
     });
   });
 
@@ -334,13 +331,13 @@ describe('Secrets Manager Tools', () => {
       const response = await callTool(
         serverActor,
         'list_secrets',
-        { label: 'encrypted' },
+        { label: 'database' },
         user1ApiKey,
       );
       expect(response.result.isError).toBe(false);
       const result = parseResult(response);
       expect(result.total).toBe(1);
-      expect(result.secrets[0].key).toBe('ENCRYPTED_SECRET');
+      expect(result.secrets[0].key).toBe('ANOTHER_SECRET');
     });
 
     it('should return empty for non-matching label', async () => {
@@ -396,7 +393,6 @@ describe('Secrets Manager Tools', () => {
       const result = parseResult(response);
       expect(result.key).toBe('API_KEY');
       expect(result.value).toBeUndefined();
-      expect(result.encrypted).toBe(false);
       expect(result.created_at).toBeGreaterThan(0);
       expect(result.updated_at).toBeGreaterThan(0);
     });
