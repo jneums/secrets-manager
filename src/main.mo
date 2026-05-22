@@ -80,7 +80,7 @@ shared ({ caller = deployer }) persistent actor class McpServer(
     };
   };
 
-  transient let authContext : ?AuthTypes.AuthContext = ?AuthState.init(
+  let authContext : ?AuthTypes.AuthContext = ?AuthState.init(
     Principal.fromActor(self),
     owner,
     issuerUrl,
@@ -93,7 +93,7 @@ shared ({ caller = deployer }) persistent actor class McpServer(
   // =================================================================================
 
   let beaconCanisterId = Principal.fromText("m63pw-fqaaa-aaaai-q33pa-cai");
-  transient let beaconContext : ?Beacon.BeaconContext = ?Beacon.init(
+  let beaconContext : ?Beacon.BeaconContext = ?Beacon.init(
     beaconCanisterId,
     ?(15 * 60),
   );
