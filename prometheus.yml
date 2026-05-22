@@ -27,7 +27,7 @@ submission:
     - Idempotent delete — safe to call on non-existent keys
   tags: [secrets, key-value, vetkeys, encryption, security, agent-tools, vault]
   visuals:
-    icon_url: https://github.com/jneums/secrets-manager/releases/download/v0.1.0-assets/icon-secrets-manager.webp
-    banner_url: https://github.com/jneums/secrets-manager/releases/download/v0.1.0-assets/banner-secrets-manager.webp
+    icon_url: https://github.com/jneums/secrets-manager/releases/download/v0.1.1-assets/icon-secrets-manager.webp
+    banner_url: https://github.com/jneums/secrets-manager/releases/download/v0.1.1-assets/banner-secrets-manager.webp
     gallery_images:
-      - https://github.com/jneums/secrets-manager/releases/download/v0.1.0-assets/banner-secrets-manager.webp
+      - https://github.com/jneums/secrets-manager/releases/download/v0.1.1-assets/banner-secrets-manager.webp
